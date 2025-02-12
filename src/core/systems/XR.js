@@ -34,10 +34,18 @@ export class XR extends System {
     this.yOrientation.setFromAxisAngle(UP, rotation.y)
   }
 
-  async enter() {
-    const session = await navigator.xr.requestSession('immersive-vr', {
+  async enter(mode) {
+    const session = await navigator.xr.requestSession(`immersive-${mode}`, {
       requiredFeatures: ['local-floor'],
     })
+    if (mode === 'ar') {
+      this.world.environment.sky.visible = false
+      this.world.stage.models.forEach(model => {
+        model.items.forEach(item => {
+          if (item.node.id === 'Ground') item.node.scale.set(0, 0, 0)
+        })
+      })
+    }
     this.world.entities.player.avatar.unmount()
     this.world.graphics.renderer.xr.setSession(session)
     this.world.nametags.setOrientation(this.yOrientation)
@@ -48,6 +56,12 @@ export class XR extends System {
   }
 
   onSessionEnd = () => {
+    this.world.environment.sky.visible = true
+    this.world.stage.models.forEach(model => {
+      model.items.forEach(item => {
+        if (item.node.id === 'Ground') item.node.scale.set(1, 1, 1)
+      })
+    })
     this.world.entities.player.avatar.mount()
     this.world.nametags.setOrientation(this.world.rig.quaternion)
     this.world.camera.position.set(0, 0, 0)

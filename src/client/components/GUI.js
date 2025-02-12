@@ -178,7 +178,7 @@ function Side({ world }) {
             background: rgba(0, 0, 0, 0.2);
             border-radius: 25px;
           }
-          &-vr {
+          &-vr, &-ar {
             font-weight: 450;
           }
           &:hover {
@@ -229,8 +229,13 @@ function Side({ world }) {
             <MessageCircleMoreIcon size={20} />
           </div>
           {world.xr.supportsVR && (
-            <div className={'bar-btn'} onClick={() => world.xr.enter()}>
+            <div className={'bar-btn'} onClick={() => world.xr.enter('vr')}>
               <div className='bar-btn-vr'>VR</div>
+            </div>
+          )}
+          {world.xr.supportsAR && (
+            <div className={'bar-btn'} onClick={() => world.xr.enter('ar')}>
+              <div className='bar-btn-ar'>AR</div>
             </div>
           )}
           {/* <div className='bar-btn' onClick={null}>
